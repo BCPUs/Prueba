@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:16
+    container_name: geomed_db
+    environment:
+      POSTGRES_DB: usersdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - geomed_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: postgres -c 'password_encryption=md5'
+    networks:
+      - geomed_network
+
+  users-service:
+    build:
+      context: ./users-service
+    container_name: users_service_app
+    ports:
+      - "8787:8787"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/usersdb
+    depends_on:
+      - db
+    networks:
+      - geomed_network
+
+  geomed-service:
+    build:
+      context: ./geomed-service
+    container_name: geomed_service_app
+    ports:
+      - "8788:8788"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/geomeddb
+    depends_on:
+      - db
+    networks:
+      - geomed_network
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: geomed_gateway
+    ports:
+      - "80:80"
+    depends_on:
+      - users-service
+      - geomed-service
+    networks:
+      - geomed_network
+
+volumes:
+  geomed_data:
+
+networks:
+  geomed_network:
+    driver: bridge
