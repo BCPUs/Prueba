@@ -1,0 +1,225 @@
+{
+  "info": {
+    "_postman_id": "geomed-service-collection",
+    "name": "GeoMed Service - Core Endpoints",
+    "description": "Colección de pruebas para los módulos Patient, Appointment y VisitDetail del microservicio GeoMed.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "patientId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "appointmentId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "visitDetailId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "Create Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cognitoUsername\": \"user_patient_001\",\n  \"cedula\": \"1712345678\",\n  \"firstName\": \"Juan\",\n  \"lastName\": \"Pérez\",\n  \"phone\": \"0991234567\",\n  \"address\": \"Av. Amazonas y Colón\",\n  \"reference\": \"Frente al parque\",\n  \"clinicalRisk\": \"LOW\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients"]
+            }
+          }
+        },
+        {
+          "name": "Get All Patients",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/patients",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/{{patientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "{{patientId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Patient",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cognitoUsername\": \"user_patient_001\",\n  \"cedula\": \"1712345678\",\n  \"firstName\": \"Juan Carlos\",\n  \"lastName\": \"Pérez Gómez\",\n  \"phone\": \"0998765432\",\n  \"address\": \"Av. Shyris y Portugal\",\n  \"reference\": \"Edificio Torres del Parque\",\n  \"clinicalRisk\": \"MEDIUM\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/{{patientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "{{patientId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Patient (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/{{patientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "{{patientId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": {{patientId}},\n  \"doctorId\": 1,\n  \"date\": \"2026-08-10\",\n  \"time\": \"10:30:00\",\n  \"reason\": \"Consulta general de rutina\",\n  \"observations\": \"Paciente refiere molestia estomacal\",\n  \"status\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appointments"]
+            }
+          }
+        },
+        {
+          "name": "Get All Appointments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appointments"]
+            }
+          }
+        },
+        {
+          "name": "Get Appointment By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appointments", "{{appointmentId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Visit Details",
+      "item": [
+        {
+          "name": "Create Visit Detail",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"appointmentId\": {{appointmentId}},\n  \"diagnosis\": \"Gastritis aguda leve\",\n  \"treatment\": \"Dieta blanda y reposo durante 3 días\",\n  \"prescription\": \"Omeprazol 20mg cada 24 horas por 7 días\",\n  \"observations\": \"Se solicita control en 15 días si persisten los síntomas\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/visit-details",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "visit-details"]
+            }
+          }
+        },
+        {
+          "name": "Get Visit Detail By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/visit-details/{{visitDetailId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "visit-details", "{{visitDetailId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Visit Detail By Appointment ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/visit-details/appointment/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "visit-details", "appointment", "{{appointmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Visit Detail",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"appointmentId\": {{appointmentId}},\n  \"diagnosis\": \"Gastritis aguda leve reevaluada\",\n  \"treatment\": \"Dieta blanda continua por 5 días\",\n  \"prescription\": \"Omeprazol 20mg + Antiácido postprandial\",\n  \"observations\": \"Paciente muestra mejoría sintomática\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/visit-details/{{visitDetailId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "visit-details", "{{visitDetailId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Visit Detail (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/visit-details/{{visitDetailId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "visit-details", "{{visitDetailId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
