@@ -1,5 +1,6 @@
 package com.pucetec.geomed.dto
 
+
 import jakarta.validation.constraints.FutureOrPresent
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull

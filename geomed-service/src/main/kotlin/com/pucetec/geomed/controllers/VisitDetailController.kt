@@ -28,15 +28,23 @@ class VisitDetailController(
         return visitDetailService.getVisitDetailById(id)
     }
 
-    @get:GetMapping
-    val allVisitDetails: List<VisitDetailResponse>
-        get() {
-            logger.info("REST request to get all VisitDetails")
-            return visitDetailService.getAllVisitDetails()
-        }
+    @GetMapping("/appointment/{appointmentId}")
+    fun getVisitDetailByAppointmentId(@PathVariable appointmentId: Long): VisitDetailResponse {
+        logger.info("REST request to get VisitDetail for Appointment : $appointmentId")
+        return visitDetailService.getVisitDetailByAppointmentId(appointmentId)
+    }
+
+    @GetMapping
+    fun getAllVisitDetails(): List<VisitDetailResponse> {
+        logger.info("REST request to get all VisitDetails")
+        return visitDetailService.getAllVisitDetails()
+    }
 
     @PutMapping("/{id}")
-    fun updateVisitDetail(@PathVariable id: Long, @Valid @RequestBody request: VisitDetailRequest): VisitDetailResponse {
+    fun updateVisitDetail(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: VisitDetailRequest
+    ): VisitDetailResponse {
         logger.info("REST request to update VisitDetail : $id")
         return visitDetailService.updateVisitDetail(id, request)
     }

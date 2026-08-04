@@ -18,33 +18,35 @@ class DoctorController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createDoctor(@Valid @RequestBody request: DoctorRequest): DoctorResponse {
-        logger.info("REST request to create Doctor")
+        logger.info("event=doctor.controller.create | msg=Peticion REST para registrar medico")
         return doctorService.createDoctor(request)
     }
 
     @GetMapping("/{id}")
     fun getDoctor(@PathVariable id: Long): DoctorResponse {
-        logger.info("REST request to get Doctor : $id")
+        logger.info("event=doctor.controller.get | msg=Peticion REST para obtener medico id={}", id)
         return doctorService.getDoctorById(id)
     }
 
-    @get:GetMapping
-    val allDoctors: List<DoctorResponse>
-        get() {
-            logger.info("REST request to get all Doctors")
-            return doctorService.getAllDoctors()
-        }
+    @GetMapping
+    fun getAllDoctors(): List<DoctorResponse> {
+        logger.info("event=doctor.controller.get_all | msg=Peticion REST para listar medicos")
+        return doctorService.getAllDoctors()
+    }
 
     @PutMapping("/{id}")
-    fun updateDoctor(@PathVariable id: Long, @Valid @RequestBody request: DoctorRequest): DoctorResponse {
-        logger.info("REST request to update Doctor : $id")
+    fun updateDoctor(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: DoctorRequest
+    ): DoctorResponse {
+        logger.info("event=doctor.controller.update | msg=Peticion REST para actualizar medico id={}", id)
         return doctorService.updateDoctor(id, request)
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteDoctor(@PathVariable id: Long) {
-        logger.info("REST request to delete Doctor : $id")
+        logger.info("event=doctor.controller.delete | msg=Peticion REST para eliminar medico id={}", id)
         doctorService.deleteDoctor(id)
     }
 }

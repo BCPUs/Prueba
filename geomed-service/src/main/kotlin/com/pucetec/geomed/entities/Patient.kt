@@ -32,4 +32,4 @@ class Patient(
 
     @Column(name = "clinical_risk", nullable = false)
     var clinicalRisk: String = ""
-)
+) : BaseEntity()

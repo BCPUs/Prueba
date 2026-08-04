@@ -28,15 +28,17 @@ class PatientController(
         return patientService.getPatientById(id)
     }
 
-    @get:GetMapping
-    val allPatients: List<PatientResponse>
-        get() {
-            logger.info("REST request to get all Patients")
-            return patientService.getAllPatients()
-        }
+    @GetMapping
+    fun getAllPatients(): List<PatientResponse> {
+        logger.info("REST request to get all Patients")
+        return patientService.getAllPatients()
+    }
 
     @PutMapping("/{id}")
-    fun updatePatient(@PathVariable id: Long, @Valid @RequestBody request: PatientRequest): PatientResponse {
+    fun updatePatient(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: PatientRequest
+    ): PatientResponse {
         logger.info("REST request to update Patient : $id")
         return patientService.updatePatient(id, request)
     }

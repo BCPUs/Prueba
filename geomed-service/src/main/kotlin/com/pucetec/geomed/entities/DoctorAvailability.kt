@@ -11,7 +11,7 @@ class DoctorAvailability(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
     var doctor: Doctor? = null,
 
@@ -27,4 +27,4 @@ class DoctorAvailability(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status: AvailabilityStatus = AvailabilityStatus.AVAILABLE
-)
+) : BaseEntity()

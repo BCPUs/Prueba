@@ -36,4 +36,4 @@ class Doctor(
 
     @OneToMany(mappedBy = "doctor", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     var availabilities: MutableList<DoctorAvailability> = mutableListOf()
-)
+) : BaseEntity()

@@ -4,17 +4,15 @@ WORKDIR /app
 
 COPY . .
 
-RUN sed -i 's/\r$//' gradlew
-RUN chmod +x gradlew
-
+RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
 RUN ./gradlew bootJar -x test --no-daemon
 
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build /app/build/libs/*[!plain].jar app.jar
 
 EXPOSE 8787
 
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

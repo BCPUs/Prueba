@@ -3,7 +3,6 @@ package com.pucetec.geomed.entities
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "appointments")
@@ -36,9 +35,6 @@ class Appointment(
     @Column(nullable = false)
     var status: AppointmentStatus = AppointmentStatus.PENDING,
 
-    @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
-
     @OneToOne(mappedBy = "appointment", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     var visitDetail: VisitDetail? = null
-)
+) : BaseEntity()

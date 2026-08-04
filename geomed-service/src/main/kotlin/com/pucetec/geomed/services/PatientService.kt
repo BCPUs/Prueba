@@ -10,6 +10,7 @@ import com.pucetec.geomed.repositories.PatientRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 @Transactional
@@ -20,7 +21,7 @@ class PatientService(
 
     fun createPatient(request: PatientRequest): PatientResponse {
         logger.info("Creating patient with cognitoUsername: ${request.cognitoUsername}")
-        if (patientRepository.existsByCognitoUsername(request.cognitoUsername)) {
+        if (patientRepository.existsByCognitoUsernameAndDeletedAtIsNull(request.cognitoUsername)) {
             throw DuplicateResourceException("Patient with cognitoUsername '${request.cognitoUsername}' already exists")
         }
         val patient = request.toEntity()
@@ -30,20 +31,20 @@ class PatientService(
     @Transactional(readOnly = true)
     fun getPatientById(id: Long): PatientResponse {
         logger.info("Fetching patient with id: $id")
-        return patientRepository.findById(id)
+        return patientRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow { ResourceNotFoundException("Patient with id $id not found") }
             .toResponse()
     }
 
     @Transactional(readOnly = true)
     fun getAllPatients(): List<PatientResponse> {
-        logger.info("Fetching all patients")
-        return patientRepository.findAll().map { it.toResponse() }
+        logger.info("Fetching all active patients")
+        return patientRepository.findAllByDeletedAtIsNull().map { it.toResponse() }
     }
 
     fun updatePatient(id: Long, request: PatientRequest): PatientResponse {
         logger.info("Updating patient with id: $id")
-        val patient = patientRepository.findById(id)
+        val patient = patientRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow { ResourceNotFoundException("Patient with id $id not found") }
 
         patient.cedula = request.cedula
@@ -58,9 +59,11 @@ class PatientService(
     }
 
     fun deletePatient(id: Long) {
-        logger.info("Deleting patient with id: $id")
-        val patient = patientRepository.findById(id)
+        logger.info("Soft deleting patient with id: $id")
+        val patient = patientRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow { ResourceNotFoundException("Patient with id $id not found") }
-        patientRepository.delete(patient)
+
+        patient.deletedAt = LocalDateTime.now()
+        patientRepository.save(patient)
     }
 }
