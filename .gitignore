@@ -2,3 +2,6 @@
 build/
 **/build/
 **/.gradle/
+.env
+**/build/
+**/.gradle/
