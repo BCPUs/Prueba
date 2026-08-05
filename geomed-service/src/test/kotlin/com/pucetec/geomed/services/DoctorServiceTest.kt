@@ -28,7 +28,7 @@ class DoctorServiceTest {
             email = "john.doe@geomed.com",
             specialty = "Cardiology"
         )
-        `when`(doctorRepository.existsByCognitoUsername("dr_john")).thenReturn(false)
+        `when`(doctorRepository.existsByCognitoUsernameAndDeletedAtIsNull("dr_john")).thenReturn(false)
 
         val savedDoctor = Doctor(
             id = 1L,
@@ -55,7 +55,7 @@ class DoctorServiceTest {
     @Test
     fun `createDoctor should throw exception when duplicate cognitoUsername exists`() {
         val request = DoctorRequest(cognitoUsername = "dr_john")
-        `when`(doctorRepository.existsByCognitoUsername("dr_john")).thenReturn(true)
+        `when`(doctorRepository.existsByCognitoUsernameAndDeletedAtIsNull("dr_john")).thenReturn(true)
 
         assertThrows<DuplicateResourceException> {
             doctorService.createDoctor(request)
@@ -70,7 +70,7 @@ class DoctorServiceTest {
             cognitoUsername = "dr_john",
             firstName = "John"
         )
-        `when`(doctorRepository.findById(1L)).thenReturn(Optional.of(doctor))
+        `when`(doctorRepository.findByIdAndDeletedAtIsNull(1L)).thenReturn(Optional.of(doctor))
 
         val result = doctorService.getDoctorById(1L)
 
@@ -80,7 +80,7 @@ class DoctorServiceTest {
 
     @Test
     fun `getDoctorById should throw exception when not found`() {
-        `when`(doctorRepository.findById(1L)).thenReturn(Optional.empty())
+        `when`(doctorRepository.findByIdAndDeletedAtIsNull(1L)).thenReturn(Optional.empty())
 
         assertThrows<ResourceNotFoundException> {
             doctorService.getDoctorById(1L)

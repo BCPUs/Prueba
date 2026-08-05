@@ -28,7 +28,7 @@ class PatientServiceTest {
             reference = "Near Central Park",
             clinicalRisk = "MEDIUM"
         )
-        `when`(patientRepository.existsByCognitoUsername("patient_alice")).thenReturn(false)
+        `when`(patientRepository.existsByCognitoUsernameAndDeletedAtIsNull("patient_alice")).thenReturn(false)
 
         val savedPatient = Patient(
             id = 1L,
@@ -55,7 +55,7 @@ class PatientServiceTest {
     @Test
     fun `createPatient should throw exception when duplicate exists`() {
         val request = PatientRequest(cognitoUsername = "patient_alice")
-        `when`(patientRepository.existsByCognitoUsername("patient_alice")).thenReturn(true)
+        `when`(patientRepository.existsByCognitoUsernameAndDeletedAtIsNull("patient_alice")).thenReturn(true)
 
         assertThrows<DuplicateResourceException> {
             patientService.createPatient(request)
@@ -65,7 +65,7 @@ class PatientServiceTest {
     @Test
     fun `getPatientById should return patient when found`() {
         val patient = Patient(id = 1L, cognitoUsername = "patient_alice")
-        `when`(patientRepository.findById(1L)).thenReturn(Optional.of(patient))
+        `when`(patientRepository.findByIdAndDeletedAtIsNull(1L)).thenReturn(Optional.of(patient))
 
         val result = patientService.getPatientById(1L)
 
@@ -75,7 +75,7 @@ class PatientServiceTest {
 
     @Test
     fun `getPatientById should throw exception when not found`() {
-        `when`(patientRepository.findById(1L)).thenReturn(Optional.empty())
+        `when`(patientRepository.findByIdAndDeletedAtIsNull(1L)).thenReturn(Optional.empty())
 
         assertThrows<ResourceNotFoundException> {
             patientService.getPatientById(1L)
