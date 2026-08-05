@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface DoctorAvailabilityRepository : JpaRepository<DoctorAvailability, Long> {
-    fun findByDoctorId(doctorId: Long): List<DoctorAvailability>
+    fun findByIdAndDeletedAtIsNull(id: Long): java.util.Optional<DoctorAvailability>
+    fun findAllByDeletedAtIsNull(): List<DoctorAvailability>
+    fun findByDoctorIdAndDeletedAtIsNull(doctorId: Long): List<DoctorAvailability>
 }

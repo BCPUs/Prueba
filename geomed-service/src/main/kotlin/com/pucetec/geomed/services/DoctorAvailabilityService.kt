@@ -23,7 +23,7 @@ class DoctorAvailabilityService(
     fun createAvailability(request: DoctorAvailabilityRequest): DoctorAvailabilityResponse {
         logger.info("Creating availability for doctor id: ${request.doctorId}")
         val doctorId = request.doctorId ?: throw IllegalArgumentException("Doctor ID is required")
-        val doctor = doctorRepository.findById(doctorId)
+        val doctor = doctorRepository.findByIdAndDeletedAtIsNull(doctorId)
             .orElseThrow { ResourceNotFoundException("Doctor with id $doctorId not found") }
 
         val availability = request.toEntity(doctor)
@@ -33,7 +33,7 @@ class DoctorAvailabilityService(
     @Transactional(readOnly = true)
     fun getAvailabilityById(id: Long): DoctorAvailabilityResponse {
         logger.info("Fetching availability with id: $id")
-        return doctorAvailabilityRepository.findById(id)
+        return doctorAvailabilityRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow { ResourceNotFoundException("Availability with id $id not found") }
             .toResponse()
     }
@@ -41,22 +41,22 @@ class DoctorAvailabilityService(
     @Transactional(readOnly = true)
     fun getAllAvailabilities(): List<DoctorAvailabilityResponse> {
         logger.info("Fetching all availabilities")
-        return doctorAvailabilityRepository.findAll().map { it.toResponse() }
+        return doctorAvailabilityRepository.findAllByDeletedAtIsNull().map { it.toResponse() }
     }
 
     @Transactional(readOnly = true)
     fun getAvailabilitiesByDoctorId(doctorId: Long): List<DoctorAvailabilityResponse> {
         logger.info("Fetching availabilities for doctor id: $doctorId")
-        return doctorAvailabilityRepository.findByDoctorId(doctorId).map { it.toResponse() }
+        return doctorAvailabilityRepository.findByDoctorIdAndDeletedAtIsNull(doctorId).map { it.toResponse() }
     }
 
     fun updateAvailability(id: Long, request: DoctorAvailabilityRequest): DoctorAvailabilityResponse {
         logger.info("Updating availability with id: $id")
-        val availability = doctorAvailabilityRepository.findById(id)
+        val availability = doctorAvailabilityRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow { ResourceNotFoundException("Availability with id $id not found") }
 
         val doctorId = request.doctorId ?: throw IllegalArgumentException("Doctor ID is required")
-        val doctor = doctorRepository.findById(doctorId)
+        val doctor = doctorRepository.findByIdAndDeletedAtIsNull(doctorId)
             .orElseThrow { ResourceNotFoundException("Doctor with id $doctorId not found") }
 
         availability.doctor = doctor
@@ -74,8 +74,9 @@ class DoctorAvailabilityService(
 
     fun deleteAvailability(id: Long) {
         logger.info("Deleting availability with id: $id")
-        val availability = doctorAvailabilityRepository.findById(id)
+        val availability = doctorAvailabilityRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow { ResourceNotFoundException("Availability with id $id not found") }
-        doctorAvailabilityRepository.delete(availability)
+        availability.deletedAt = java.time.LocalDateTime.now()
+        doctorAvailabilityRepository.save(availability)
     }
 }

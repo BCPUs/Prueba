@@ -6,7 +6,6 @@ import com.pucetec.geomed.entities.AppointmentStatus
 import com.pucetec.geomed.exceptions.DuplicateResourceException
 import com.pucetec.geomed.exceptions.InvalidStatusException
 import com.pucetec.geomed.exceptions.ResourceNotFoundException
-import com.pucetec.geomed.exceptions.CustomExceptions.kt
 import com.pucetec.geomed.mappers.toEntity
 import com.pucetec.geomed.mappers.toResponse
 import com.pucetec.geomed.repositories.AppointmentRepository
