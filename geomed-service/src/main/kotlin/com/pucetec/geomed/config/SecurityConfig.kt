@@ -25,10 +25,18 @@ class SecurityConfig(
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
-                // Ejemplo de autorización por roles directos en la cadena
-                auth.requestMatchers(HttpMethod.GET, "/doctors/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
-                auth.requestMatchers(HttpMethod.POST, "/doctors/**").hasRole("ADMIN")
-                auth.requestMatchers("/appointments/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+                // Reglas para el módulo de doctores
+                auth.requestMatchers(HttpMethod.GET, "/api/doctors/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+                auth.requestMatchers(HttpMethod.POST, "/api/doctors/**").hasRole("ADMIN")
+
+                // Reglas para el módulo de citas
+                auth.requestMatchers("/api/appointments/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+
+                // Reglas para el módulo de pacientes
+                auth.requestMatchers(HttpMethod.GET, "/api/patients/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+                auth.requestMatchers("/api/patients/**").hasAnyRole("ADMIN", "DOCTOR")
+
+                // Cualquier otra solicitud requiere autenticación
                 auth.anyRequest().authenticated()
             }
             .oauth2ResourceServer { oauth2 ->
